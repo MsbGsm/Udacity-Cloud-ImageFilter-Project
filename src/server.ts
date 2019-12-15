@@ -29,6 +29,24 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   /**************************************************************************** */
 
+  app.get("/filteredimage", async (req, res) => {
+    const imageUrl = req.query.image_url + "";
+    
+    let regexUrl = /(http(s?):\/\/)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)/g;
+    if (!imageUrl || !regexUrl.test(imageUrl)) {
+      return res.status(422).send("Please Provide A Valid Image URL or a supported format: jpg, gif, png, jpeg!!");
+    }
+
+      const processedImagePath = await filterImageFromURL(imageUrl);
+      res.status(200).sendFile(processedImagePath, err => {
+        if (err) {
+          console.log(err);
+        } else {
+          deleteLocalFiles([processedImagePath]);
+        }
+      });
+  });
+
   //! END @TODO1
   
   // Root Endpoint
