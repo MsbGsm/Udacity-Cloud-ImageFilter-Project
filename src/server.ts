@@ -37,6 +37,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       return res.status(422).send("Please Provide A Valid Image URL or a supported format: jpg, gif, png, jpeg!!");
     }
 
+    try {
       const processedImagePath = await filterImageFromURL(imageUrl);
       res.status(200).sendFile(processedImagePath, err => {
         if (err) {
@@ -45,6 +46,9 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
           deleteLocalFiles([processedImagePath]);
         }
       });
+    } catch(err) {
+      res.status(500).send('Error: Something wrong durring image processing');
+    }
   });
 
   //! END @TODO1
